@@ -8,9 +8,10 @@ ENV HEROKU true
 # Add requirements and install application
 RUN set -ex; \
     apk add --no-cache  \
+        curl \
         postgresql-client \
     ; \
-    curl https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz | tar xzf - -C /usr/local --strip-components=1
+    curl https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz | tar -xzf - -C /usr/local --strip-components=1
 
 ARG APP_USER=covid
 ARG APP_USER_ID=5001
@@ -24,21 +25,23 @@ ARG APP_PATH=/covid
 # that do not allow images running as root.
 RUN set -ex; \
     groupadd -f --gid "${APP_GROUP_ID}" "${APP_GROUP}"; \
-    adduser -D -g '' -u "${APP_USER_ID}" -G "${APP_GROUP}" "${APP_USER}"
+    adduser -D -g '' -u "${APP_USER_ID}" -G "${APP_GROUP}" "${APP_USER}"; \
+    mkdir -p "/home/${APP_USER}"; \
+    chown -R "${APP_USER}:${APP_GROUP}" "${APP_PATH}"
 
-ARG VERSION=master
+ARG COVID_VERSION=master
 
-ADD --chown=covid:covid https://github.com/lifen-labs/covid/archive/${VERSION}.tar.gz ./
+ADD --chown=covid:covid https://github.com/lifen-labs/covid/archive/${COVID_VERSION}.tar.gz ./
 
 RUN set -ex; \
-    tar -xzf ${VERSION}.tar.gz; \
-    rm -f ${VERSION}.tar.gz; \
-    mv "covid-${VERSION}" \
+    tar -xzf ${COVID_VERSION}.tar.gz; \
+    rm -f ${COVID_VERSION}.tar.gz; \
+    mv "covid-${COVID_VERSION}" \
         "${APP_PATH}" \
     ; \
-    chown -R covid:covid "${APP_PATH}"
+    chown -R "${APP_USER}:${APP_GROUP}" "${APP_PATH}"
 
-USER covid:covid
+USER ${APP_USER}:${APP_GROUP}
 
 WORKDIR ${APP_PATH}
 
@@ -46,8 +49,8 @@ RUN set -ex; \
     gem install bundler
 
 RUN set -ex; \
+    bundle exec install --help; \
     bundle exec install \
-        --deployment \
         --path vendor/bundle \
         --no-cache \
         --without="test development" \
@@ -77,7 +80,7 @@ ARG BUILD_DATE
 # Container annotations (https://github.com/opencontainers/image-spec)
 LABEL maintainer="Monogramm maintainers <opensource at monogramm dot io>" \
       product="Covid" \
-      version=$VERSION \
+      version=$COVID_VERSION \
       org.label-schema.vcs-ref=$VCS_REF \
       org.label-schema.vcs-url="https://github.com/Monogramm/docker-covid" \
       org.label-schema.build-date=$BUILD_DATE \
@@ -85,7 +88,7 @@ LABEL maintainer="Monogramm maintainers <opensource at monogramm dot io>" \
       org.label-schema.description="Web application which aims to facilitate covid-19 patients' self-monitoring at home via forms sent by SMS." \
       org.label-schema.url="https://github.com/lifen-labs/covid" \
       org.label-schema.vendor="Lifen (labs)" \
-      org.label-schema.version=$VERSION \
+      org.label-schema.version=$COVID_VERSION \
       org.label-schema.schema-version="1.0" \
       org.opencontainers.image.revision=$VCS_REF \
       org.opencontainers.image.source="https://github.com/Monogramm/docker-covid" \
@@ -94,10 +97,10 @@ LABEL maintainer="Monogramm maintainers <opensource at monogramm dot io>" \
       org.opencontainers.image.description="Web application which aims to facilitate covid-19 patients' self-monitoring at home via forms sent by SMS." \
       org.opencontainers.image.url="https://github.com/lifen-labs/covid" \
       org.opencontainers.image.vendor="Lifen (labs)" \
-      org.opencontainers.image.version=$VERSION \
+      org.opencontainers.image.version=$COVID_VERSION \
       org.opencontainers.image.authors="Monogramm maintainers <opensource at monogramm dot io>"
 
 RUN set -ex; \
-    echo "${VERSION}" > '.docker-build-version'; \
+    echo "${COVID_VERSION}" > '.docker-build-version'; \
     echo "${VCS_REF}" > '.docker-build-vcs_ref'; \
     echo "${BUILD_DATE}" > '.docker-build-date'
