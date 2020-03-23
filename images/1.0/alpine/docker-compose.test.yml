@@ -7,16 +7,16 @@ services:
       context: ./test
       dockerfile: Dockerfile
     depends_on:
-      - __app_slug__-db
-      - __app_slug__
-      - __app_slug__-nginx
+      - covid-db
+      - covid
+      - covid-nginx
     volumes_from:
-      - __app_slug__
+      - covid
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
 
-  __app_slug__:
+  covid:
     # For development or CI, tag build from local Dockerfile
     build:
       context: ./
@@ -27,54 +27,54 @@ services:
         - BUILD_DATE=${BUILD_DATE}
     # For production, download prebuilt image
     #image: ${IMAGE_NAME}
-    container_name: __app_slug__
+    container_name: covid
     #restart: always
     depends_on:
-      - __app_slug__-db
+      - covid-db
     links:
-      - __app_slug__-db
+      - covid-db
     #ports:
     #  - 9000:9000
     volumes:
-      - $__app_uppercase_slug___HOME/html:/var/www/html
+      - $COVID_HOME/html:/var/www/html
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     environment:
-      - __app_uppercase_slug___DB_TYPE=pgsql
-      - __app_uppercase_slug___DB_HOST=$__app_slug__-db # same as pgsql container name
-      - __app_uppercase_slug___DB_NAME=$__app_uppercase_slug___DB_NAME
-      - __app_uppercase_slug___DB_USER=$__app_uppercase_slug___DB_USER
-      - __app_uppercase_slug___DB_PASSWORD=$__app_uppercase_slug___DB_PASSWD
+      - COVID_DB_TYPE=pgsql
+      - COVID_DB_HOST=$covid-db # same as pgsql container name
+      - COVID_DB_NAME=$COVID_DB_NAME
+      - COVID_DB_USER=$COVID_DB_USER
+      - COVID_DB_PASSWORD=$COVID_DB_PASSWD
 
-  __app_slug__-db:
+  covid-db:
     image: postgres:latest
-    container_name: __app_slug__-db
+    container_name: covid-db
     restart: always
     #ports:
     #  - 5432:5432
     volumes:
-      - $__app_uppercase_slug___HOME/db:/var/lib/postgresql/data
+      - $COVID_HOME/db:/var/lib/postgresql/data
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     environment:
-      - POSTGRES_DB=$__app_uppercase_slug___DB_NAME
-      - POSTGRES_USER=$__app_uppercase_slug___DB_USER
-      - POSTGRES_PASSWORD=$__app_uppercase_slug___DB_PASSWD
+      - POSTGRES_DB=$COVID_DB_NAME
+      - POSTGRES_USER=$COVID_DB_USER
+      - POSTGRES_PASSWORD=$COVID_DB_PASSWD
 
-  __app_slug__-nginx:
+  covid-nginx:
     image: nginx:latest
-    container_name: __app_slug__-nginx
+    container_name: covid-nginx
     restart: always
     ports:
       - 80:80
       # If you need SSL connection
       # - '443:443'
     depends_on:
-      - __app_slug__
+      - covid
     links:
-      - __app_slug__
+      - covid
     volumes:
-      - $__app_uppercase_slug___HOME/html:/var/www/html
+      - $COVID_HOME/html:/var/www/html
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       # TODO Provide a custom nginx conf
@@ -84,4 +84,4 @@ services:
       # - ./certs-data:/data/letsencrypt
     environment:
       - NGINX_HOST=localhost # set your local domain or your live domain
-      # - NGINX_CGI=__app_slug__:9000 # same as __app_slug__ container name
+      # - NGINX_CGI=covid:9000 # same as covid container name

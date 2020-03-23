@@ -7,16 +7,15 @@ services:
       context: ./test
       dockerfile: Dockerfile
     depends_on:
-      - __app_slug__-db
-      - __app_slug__
-      - __app_slug__-nginx
+      - covid-db
+      - covid
     volumes_from:
-      - __app_slug__
+      - covid
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
 
-  __app_slug__:
+  covid:
     # For development or CI, tag build from local Dockerfile
     build:
       context: ./
@@ -27,61 +26,55 @@ services:
         - BUILD_DATE=${BUILD_DATE}
     # For production, download prebuilt image
     #image: ${IMAGE_NAME}
-    container_name: __app_slug__
+    container_name: covid
     #restart: always
     depends_on:
-      - __app_slug__-db
+      - covid-db
     links:
-      - __app_slug__-db
-    #ports:
-    #  - 9000:9000
+      - covid-db
     volumes:
-      - $__app_uppercase_slug___HOME/html:/var/www/html
+      - ${COVID_HOME}/html:/var/www/html
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     environment:
-      - __app_uppercase_slug___DB_TYPE=pgsql
-      - __app_uppercase_slug___DB_HOST=$__app_slug__-db # same as pgsql container name
-      - __app_uppercase_slug___DB_NAME=$__app_uppercase_slug___DB_NAME
-      - __app_uppercase_slug___DB_USER=$__app_uppercase_slug___DB_USER
-      - __app_uppercase_slug___DB_PASSWORD=$__app_uppercase_slug___DB_PASSWD
+      - RAILS_ENV=production
+      - DATABASE_URL=postgres://${COVID_DB_USER}:${COVID_DB_PASSWD}@covid-db:5432/${COVID_DB_NAME}?timeout=5000&reconnect=true
+      # Twilio's API to send SMS
+      - TWILIO_ACCOUNT_ID=${COVID_TWILIO_ACCOUNT_ID}
+      - TWILIO_AUTH_TOKEN=${COVID_TWILIO_AUTH_TOKEN}
+      - TWILIO_PHONE_NUMBER=${COVID_TWILIO_PHONE_NUMBER} 
+      # Slack/Mattermost to monitor failed SMS
+      - SLACK_HOOK_URL=${COVID_SLACK_HOOK_URL}
+      # Redis Config
+      - REDIS_HOST=covid-redis
+      - REDIS_PORT_NUMBER=6379
+      #- REDIS_PASSWORD=${COVID_REDIS_PASSWD}
 
-  __app_slug__-db:
-    image: postgres:latest
-    container_name: __app_slug__-db
+  covid-db:
+    image: postgres:10.4-alpine
+    container_name: covid-db
     restart: always
     #ports:
     #  - 5432:5432
     volumes:
-      - $__app_uppercase_slug___HOME/db:/var/lib/postgresql/data
+      - ${COVID_HOME}/db:/var/lib/postgresql/data
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     environment:
-      - POSTGRES_DB=$__app_uppercase_slug___DB_NAME
-      - POSTGRES_USER=$__app_uppercase_slug___DB_USER
-      - POSTGRES_PASSWORD=$__app_uppercase_slug___DB_PASSWD
+      - POSTGRES_DB=${COVID_DB_NAME}
+      - POSTGRES_USER=${COVID_DB_USER}
+      - POSTGRES_PASSWORD=${COVID_DB_PASSWD}
 
-  __app_slug__-nginx:
-    image: nginx:latest
-    container_name: __app_slug__-nginx
+  covid-redis:
+    image: redis:5.0-alpine
+    container_name: covid-redis
     restart: always
-    ports:
-      - 80:80
-      # If you need SSL connection
-      # - '443:443'
-    depends_on:
-      - __app_slug__
-    links:
-      - __app_slug__
+    #healthcheck:
+    #  test: ["CMD", "redis-cli", "ping"]
     volumes:
-      - $__app_uppercase_slug___HOME/html:/var/www/html
+      - ${COVID_HOME}/redis/:/data
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-      # TODO Provide a custom nginx conf
-      #- ./nginx.conf:/etc/nginx/nginx.conf:ro
-      # If you need SSL connection, you can provide your own certificates
-      # - ./certs:/etc/letsencrypt
-      # - ./certs-data:/data/letsencrypt
     environment:
-      - NGINX_HOST=localhost # set your local domain or your live domain
-      # - NGINX_CGI=__app_slug__:9000 # same as __app_slug__ container name
+      #- REDIS_PASSWORD=${COVID_REDIS_PASSWD}
+      - ALLOW_EMPTY_PASSWORD=yes

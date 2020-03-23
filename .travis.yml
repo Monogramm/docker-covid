@@ -8,7 +8,6 @@ language: shell
 branches:
   only:
     - master
-    - develop
 
 before_script:
   - env | sort
@@ -16,7 +15,7 @@ before_script:
   - export TAG=travis
   - export VCS_REF=`git rev-parse --short HEAD`
   - export BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"`
-  - export IMAGE_NAME=docker-__app_slug__
+  - export IMAGE_NAME=docker-covid
 
 script:
   - cd "$dir"
@@ -26,10 +25,10 @@ script:
   # Test containers run
   - travis_retry docker-compose -f docker-compose.test.yml up -d && sleep 60
   - docker-compose -f docker-compose.test.yml ps
-  - docker-compose -f docker-compose.test.yml logs "__app_slug__-db"
-  - docker-compose -f docker-compose.test.yml ps "__app_slug__-db" | grep "Up"
-  - docker-compose -f docker-compose.test.yml logs "__app_slug__"
-  - docker-compose -f docker-compose.test.yml ps "__app_slug__" | grep "Up"
+  - docker-compose -f docker-compose.test.yml logs "covid-db"
+  - docker-compose -f docker-compose.test.yml ps "covid-db" | grep "Up"
+  - docker-compose -f docker-compose.test.yml logs "covid"
+  - docker-compose -f docker-compose.test.yml ps "covid" | grep "Up"
   - echo 'Wait until containers init and tests are over' && sleep 60
   - docker-compose -f docker-compose.test.yml logs "sut"
   - docker-compose -f docker-compose.test.yml ps "sut" | grep "Exit 0"
@@ -37,10 +36,10 @@ script:
   - docker-compose -f docker-compose.test.yml down
   - travis_retry docker-compose -f docker-compose.test.yml up -d && sleep 60
   - docker-compose -f docker-compose.test.yml ps
-  - docker-compose -f docker-compose.test.yml logs "__app_slug__-db"
-  - docker-compose -f docker-compose.test.yml ps "__app_slug__-db" | grep "Up"
-  - docker-compose -f docker-compose.test.yml logs "__app_slug__"
-  - docker-compose -f docker-compose.test.yml ps "__app_slug__" | grep "Up"
+  - docker-compose -f docker-compose.test.yml logs "covid-db"
+  - docker-compose -f docker-compose.test.yml ps "covid-db" | grep "Up"
+  - docker-compose -f docker-compose.test.yml logs "covid"
+  - docker-compose -f docker-compose.test.yml ps "covid" | grep "Up"
   - echo 'Wait until containers init and tests are over' && sleep 60
   - docker-compose -f docker-compose.test.yml logs "sut"
   - docker-compose -f docker-compose.test.yml ps "sut" | grep "Exit 0"
