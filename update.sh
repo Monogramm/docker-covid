@@ -25,11 +25,12 @@ function version_greater_or_equal() {
 }
 
 dockerRepo="monogramm/docker-covid"
-# Retrieve automatically the latest versions
-latests=( $( curl -fsSL 'https://api.github.com/repos/lifen-labs/covid/tags' |tac|tac| \
-	grep -oE '[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+' | \
-	sort -urV )
-	master )
+# TODO Retrieve automatically the latest versions
+#latests=( $( curl -fsSL 'https://api.github.com/repos/lifen-labs/covid/tags' |tac|tac| \
+#	grep -oE '[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+' | \
+#	sort -urV ) )
+
+latests=( master )
 
 # Remove existing images
 echo "reset docker images"

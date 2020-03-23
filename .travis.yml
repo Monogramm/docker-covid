@@ -48,5 +48,5 @@ notifications:
   email: false
 
 env: # Environments
-    - VERSION=1.0 VARIANT=alpine
-    - VERSION=1.0 VARIANT=debian
+    - VERSION=master VARIANT=alpine
+    - VERSION=master VARIANT=debian
