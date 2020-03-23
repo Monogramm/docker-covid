@@ -10,7 +10,6 @@ RUN set -ex; \
     apk add --no-cache  \
         postgresql-client \
     ; \
-    apt-get clean ; \
     curl https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz | tar xzf - -C /usr/local --strip-components=1
 
 ARG APP_USER=covid
