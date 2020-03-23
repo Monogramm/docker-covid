@@ -1,0 +1,63 @@
+version: "2"
+
+services:
+  # https://docs.docker.com/docker-hub/builds/automated-testing/
+  sut:
+    build:
+      context: ./test
+      dockerfile: Dockerfile
+    depends_on:
+      - __app_slug__-db
+      - __app_slug__
+    volumes_from:
+      - __app_slug__
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+
+  __app_slug__:
+    # For development or CI, tag build from local Dockerfile
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args: 
+        - TAG=${TAG}
+        - VCS_REF=${VCS_REF}
+        - BUILD_DATE=${BUILD_DATE}
+    # For production, download prebuilt image
+    #image: ${IMAGE_NAME}
+    container_name: __app_slug__
+    #restart: always
+    depends_on:
+      - __app_slug__-db
+    links:
+      - __app_slug__-db
+    ports:
+      - 80:80
+    volumes:
+      - $__app_uppercase_slug___HOME/html:/var/www/html
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    environment:
+      - __app_uppercase_slug___DB_TYPE=mysql
+      - __app_uppercase_slug___DB_HOST=$__app_slug__-db # same as mysql container name
+      - __app_uppercase_slug___DB_NAME=$__app_uppercase_slug___DB_NAME
+      - __app_uppercase_slug___DB_USER=$__app_uppercase_slug___DB_USER
+      - __app_uppercase_slug___DB_PASSWORD=$__app_uppercase_slug___DB_PASSWD
+
+  __app_slug__-db:
+    image: mariadb:latest
+    container_name: __app_slug__-db
+    restart: always
+    command: --character_set_client=utf8 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --character-set-client-handshake=FALSE
+    #ports:
+    #  - 3306:3306
+    volumes:
+      - $__app_uppercase_slug___HOME/db:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    environment:
+      - MYSQL_ROOT_PASSWORD=$__app_uppercase_slug___DB_ROOT_PASSWD
+      - MYSQL_DATABASE=$__app_uppercase_slug___DB_NAME
+      - MYSQL_USER=$__app_uppercase_slug___DB_USER
+      - MYSQL_PASSWORD=$__app_uppercase_slug___DB_PASSWD
