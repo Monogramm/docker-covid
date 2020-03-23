@@ -28,7 +28,7 @@ ARG APP_PATH=/covid
 # that do not allow images running as root.
 RUN set -ex; \
     groupadd -f --gid "${APP_GROUP_ID}" "${APP_GROUP}"; \
-    useradd --disabled-password --gecos '' --uid "${APP_USER_ID}" --gid "${APP_GROUP_ID}" "${APP_USER}"
+    useradd --uid "${APP_USER_ID}" --gid "${APP_GROUP_ID}" "${APP_USER}"
 
 ARG VERSION=%%VERSION%%
 
