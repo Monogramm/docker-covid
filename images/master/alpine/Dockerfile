@@ -24,9 +24,11 @@ ARG APP_PATH=/covid
 # Running as non-root enables running this image in platforms like OpenShift
 # that do not allow images running as root.
 RUN set -ex; \
-    groupadd -f --gid "${APP_GROUP_ID}" "${APP_GROUP}"; \
+    addgroup -S --gid "${APP_GROUP_ID}" "${APP_GROUP}"; \
     adduser -D -g '' -u "${APP_USER_ID}" -G "${APP_GROUP}" "${APP_USER}"; \
     mkdir -p "/home/${APP_USER}"; \
+    chown -R "${APP_USER}:${APP_GROUP}" "/home/${APP_USER}"; \
+    mkdir -p "${APP_PATH}"; \
     chown -R "${APP_USER}:${APP_GROUP}" "${APP_PATH}"
 
 ARG COVID_VERSION=master
