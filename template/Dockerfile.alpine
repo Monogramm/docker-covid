@@ -51,11 +51,9 @@ RUN set -ex; \
 RUN set -ex; \
     bundle exec install --help; \
     bundle exec install \
-        --path vendor/bundle \
-        --no-cache \
-        --without="test development" \
-        --jobs=8 \
-        --retry=3 \
+        -t vendor/bundle \
+        -d \
+        -p \
     ; \
     yarn install \
         --no-progress \
