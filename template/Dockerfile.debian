@@ -10,7 +10,9 @@ RUN set -ex; \
     apt-get update -qq; \
     DEBIAN_FRONTEND=noninteractive apt-get install -y  \
         netcat \
+        gcc \
         git \
+        make \
         postgresql-client \
     ; \
     apt-get clean ; \

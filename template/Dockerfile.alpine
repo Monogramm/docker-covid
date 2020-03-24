@@ -9,7 +9,9 @@ ENV HEROKU true
 RUN set -ex; \
     apk add --no-cache  \
         curl \
+        gcc \
         git \
+        make \
         postgresql-client \
     ; \
     curl https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz | tar -xzf - -C /usr/local --strip-components=1
