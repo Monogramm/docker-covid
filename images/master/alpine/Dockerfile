@@ -27,9 +27,7 @@ RUN set -ex; \
     addgroup -S --gid "${APP_GROUP_ID}" "${APP_GROUP}"; \
     adduser -D -g '' -u "${APP_USER_ID}" -G "${APP_GROUP}" "${APP_USER}"; \
     mkdir -p "/home/${APP_USER}"; \
-    chown -R "${APP_USER}:${APP_GROUP}" "/home/${APP_USER}"; \
-    mkdir -p "${APP_PATH}"; \
-    chown -R "${APP_USER}:${APP_GROUP}" "${APP_PATH}"
+    chown -R "${APP_USER}:${APP_GROUP}" "/home/${APP_USER}"
 
 ARG COVID_VERSION=master
 

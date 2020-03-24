@@ -30,9 +30,7 @@ RUN set -ex; \
     groupadd -f --gid "${APP_GROUP_ID}" "${APP_GROUP}"; \
     useradd --uid "${APP_USER_ID}" --gid "${APP_GROUP_ID}" "${APP_USER}"; \
     mkdir -p "/home/${APP_USER}"; \
-    chown -R "${APP_USER}:${APP_GROUP}" "/home/${APP_USER}"; \
-    mkdir -p "${APP_PATH}"; \
-    chown -R "${APP_USER}:${APP_GROUP}" "${APP_PATH}"
+    chown -R "${APP_USER}:${APP_GROUP}" "/home/${APP_USER}"
 
 ARG COVID_VERSION=master
 
