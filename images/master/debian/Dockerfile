@@ -52,12 +52,7 @@ RUN set -ex; \
     gem install bundler
 
 RUN set -ex; \
-    bundle exec install --help; \
-    bundle exec install \
-        -t vendor/bundle \
-        -d \
-        -p \
-    ; \
+    bundle exec install; \
     yarn install \
         --no-progress \
         --non-interactive \
