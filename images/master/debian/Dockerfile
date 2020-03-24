@@ -10,6 +10,7 @@ RUN set -ex; \
     apt-get update -qq; \
     DEBIAN_FRONTEND=noninteractive apt-get install -y  \
         netcat \
+        git \
         postgresql-client \
     ; \
     apt-get clean ; \
@@ -52,7 +53,14 @@ RUN set -ex; \
     gem install bundler
 
 RUN set -ex; \
-    bundle exec install; \
+    bundle install \
+        --deployment \
+        --path vendor/bundle \
+        --no-cache \
+        --with="docker opf_plugins" \
+        --without="test development" \
+        --jobs=8 --retry=3 \
+    ; \
     yarn install \
         --no-progress \
         --non-interactive \
