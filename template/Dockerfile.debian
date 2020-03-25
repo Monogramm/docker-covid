@@ -9,6 +9,7 @@ ENV HEROKU true
 RUN set -ex; \
     apt-get update -qq; \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        apt-transport-https \
         netcat \
         gcc \
         git \
