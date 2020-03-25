@@ -11,20 +11,6 @@ log() {
     echo "[$0] [$(date +%Y-%m-%dT%H:%M:%S)] ${MESSAGE}"
 }
 
-# init flag file
-init_file() {
-    FILE=${1}
-    if [ -z "${FILE}" ]; then
-        log "Missing name docker init file!"
-        exit 1
-    fi
-
-    CONTENT=${2:-$(date -u +%Y-%m-%dT%H:%M:%SZ)}
-
-    echo "$CONTENT" \
-        > "var/.docker-init-${FILE}"
-}
-
 # wait for service to be reachable
 wait_for_service() {
     WAIT_FOR_ADDR=${1}
@@ -108,21 +94,20 @@ if [ -n "${DATABASE_URL}" ]; then
     if bundle exec rails db:version | grep 'Current version: 0'; then
         log "Executing application's database setup..."
         bundle exec rails db:setup
-        bundle exec rails db:version
         log "Application's database setup applied."
+        bundle exec rails db:version
+    else
+        log "Checking application's migrations status..."
+        bundle exec rails db:migrate:status
+
+        # TODO Execute migrations if needed
     fi
-
-    log "Checking application's migrations status..."
-    bundle exec rails db:migrate:status
-
-    # TODO Execute migrations if needed
 
     # Generate default admin account if never done before
     if [ ! -f 'var/.docker-init-admin' ] && [ -n "${COVID_ADMIN_PASSWD}" ]; then
         log "Generating default admin account..."
 
         # TODO Create a default admin account
-        #init_file admin
 
         log "Default admin account generated..."
     fi

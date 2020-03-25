@@ -48,8 +48,8 @@ services:
     networks:
       - covid_external_network
       - covid_internal_network
-    expose:
-      - 3000
+    ports:
+      - '3000:3000'
     volumes:
       - covid_var:/covid/var
       - covid_log:/covid/log
