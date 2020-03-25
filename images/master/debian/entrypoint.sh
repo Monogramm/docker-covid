@@ -102,6 +102,9 @@ if [ -z "${DATABASE_URL}" ]; then
 fi
 
 if [ -n "${DATABASE_URL}" ]; then
+    log "Checking application's database status..."
+    bundle exec rails db:version
+    bundle exec rails db:migrate:status
 
     if [ ! -f 'var/.docker-init-db-setup' ]; then
         log "Executing application's database setup..."
