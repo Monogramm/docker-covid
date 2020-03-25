@@ -73,7 +73,8 @@ RUN set -ex; \
     ; \
     rm -rf vendor/bundle/ruby/*/cache; \
     rm -rf vendor/bundle/ruby/*/gems/*/spec; \
-    rm -rf vendor/bundle/ruby/*/gems/*/test
+    rm -rf vendor/bundle/ruby/*/gems/*/test; \
+    mkdir -p var
 
 COPY entrypoint.sh /
 

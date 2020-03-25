@@ -33,7 +33,9 @@ services:
     links:
       - covid-db
     volumes:
-      - ${COVID_HOME}/html:/var/www/html
+      - ${COVID_HOME}/var:/covid/var
+      - ${COVID_HOME}/log:/covid/log
+      #- ${COVID_HOME}/tmp:/covid/tmp
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     environment:

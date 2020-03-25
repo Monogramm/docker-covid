@@ -22,7 +22,7 @@ init_file() {
     CONTENT=${2:-$(date -u +%Y-%m-%dT%H:%M:%SZ)}
 
     echo "$CONTENT" \
-        > ".docker-init-${FILE}"
+        > "'var/.docker-init-${FILE}"
 }
 
 # wait for service to be reachable
@@ -103,7 +103,7 @@ fi
 
 if [ -n "${DATABASE_URL}" ]; then
 
-    if [ ! -f '.docker-init-db-setup' ]; then
+    if [ ! -f 'var/.docker-init-db-setup' ]; then
         log "Executing application's database setup..."
         bundle exec rails db:setup
         init_file db-setup
@@ -111,7 +111,7 @@ if [ -n "${DATABASE_URL}" ]; then
     fi
 
     # Generate default admin account if never done before
-    if [ ! -f .docker-init-admin ] && [ -n "${COVID_ADMIN_PASSWD}" ]; then
+    if [ ! -f 'var/.docker-init-admin' ] && [ -n "${COVID_ADMIN_PASSWD}" ]; then
         log "Generating default admin account..."
 
         # TODO
