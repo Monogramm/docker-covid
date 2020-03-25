@@ -22,7 +22,8 @@ RUN set -ex; \
     apk add --no-cache  \
         yarn \
     ; \
-    yarn --version
+    yarn --version; \
+    rm -rf /var/cache/apk/*
 
 ARG APP_USER=covid
 ARG APP_USER_ID=5001

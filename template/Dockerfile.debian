@@ -16,8 +16,6 @@ RUN set -ex; \
         make \
         postgresql-client \
     ; \
-    apt-get clean ; \
-    rm -rf /var/lib/apt/lists/*; \
     curl https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz | tar xzf - -C /usr/local --strip-components=1; \
     node --version; \
     npm --version; \
@@ -27,7 +25,9 @@ RUN set -ex; \
     apt-get install -y --no-install-recommends \
         yarn \
     ; \
-    yarn --version
+    yarn --version; \
+    apt-get clean ; \
+    rm -rf /var/lib/apt/lists/*
 
 ARG APP_USER=covid
 ARG APP_USER_ID=5001
