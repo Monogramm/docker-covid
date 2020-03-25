@@ -45,6 +45,8 @@ RUN set -ex; \
     mkdir -p "/home/${APP_USER}"; \
     chown -R "${APP_USER}:${APP_GROUP}" "/home/${APP_USER}"
 
+VOLUME [ "log", "tmp", "var" ]
+
 ARG COVID_VERSION=master
 
 ADD --chown=covid:covid https://github.com/lifen-labs/covid/archive/${COVID_VERSION}.tar.gz ./

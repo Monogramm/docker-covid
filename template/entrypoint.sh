@@ -106,7 +106,7 @@ if [ -n "${DATABASE_URL}" ]; then
     if [ ! -f 'var/.docker-init-db-setup' ]; then
         log "Executing application's database setup..."
         bundle exec rails db:setup
-        init_file db-setup
+        #init_file db-setup
         log "Application's database migrations applied."
     fi
 
