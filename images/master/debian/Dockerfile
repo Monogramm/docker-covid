@@ -5,7 +5,7 @@ ENV NODE_ENV=production
 ENV RAILS_ENV production
 ENV HEROKU true
 
-# Add requirements and install application
+# Add requirements and install dependencies
 RUN set -ex; \
     apt-get update -qq; \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
@@ -14,6 +14,7 @@ RUN set -ex; \
         gcc \
         git \
         make \
+        openssl \
         postgresql-client \
     ; \
     curl https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz | tar xzf - -C /usr/local --strip-components=1; \

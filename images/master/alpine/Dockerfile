@@ -5,7 +5,7 @@ ENV NODE_ENV=production
 ENV RAILS_ENV production
 ENV HEROKU true
 
-# Add requirements and install application
+# Add requirements and install dependencies
 RUN set -ex; \
     apk add --no-cache  \
         build-base \
@@ -15,6 +15,7 @@ RUN set -ex; \
         libxml2-dev \
         libxslt-dev \
         make \
+        openssl \
         postgresql-client \
         postgresql-dev \
         yarn \
