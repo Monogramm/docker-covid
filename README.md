@@ -28,6 +28,11 @@ Web application which aims to facilitate covid-19 patients' self-monitoring at h
 
 ## How to run this image ?
 
+1. Clone this project using `git clone https://github.com/Monogramm/docker-covid.git`
+1. Replace any sensitive information in the `.env` file by your own
+1. Run the application by using `docker-compose up -d`
+1. Open your browser at _http://localhost:3000_
+
 <!--
     If based on official images, refer to official doc:
 
