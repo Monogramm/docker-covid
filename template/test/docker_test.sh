@@ -22,10 +22,10 @@ if ! ping -c 10 -q covid ; then
     exit 4
 fi
 
-# youAdd your own tests
+# Add your own tests
 # https://docs.docker.com/docker-hub/builds/automated-testing/
 echo "Executing Covid app tests..."
-wget http://covid:3000
+wget https://covid:3000
 cat index.html
 
 # Success
