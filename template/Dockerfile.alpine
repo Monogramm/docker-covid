@@ -8,6 +8,7 @@ ENV HEROKU true
 # Add requirements and install application
 RUN set -ex; \
     apk add --no-cache  \
+        build-base \
         curl \
         gcc \
         git \
