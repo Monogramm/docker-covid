@@ -81,9 +81,7 @@ RUN set -ex; \
     rm -rf vendor/bundle/ruby/*/gems/*/spec; \
     rm -rf vendor/bundle/ruby/*/gems/*/test
 
-COPY --chown=${APP_USER}:${APP_GROUP} entrypoint.sh /
-RUN set -ex; \
-    chmod 755 /entrypoint.sh;
+COPY entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["bundle", "exec", "passenger", "start"]
