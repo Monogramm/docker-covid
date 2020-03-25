@@ -15,10 +15,13 @@ RUN set -ex; \
         postgresql-client \
         yarn \
     ; \
-    yarn --version; \
     curl https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz | tar -xzf - -C /usr/local --strip-components=1; \
     node --version; \
-    npm --version
+    npm --version; \
+    apk add --no-cache  \
+        yarn \
+    ; \
+    yarn --version
 
 ARG APP_USER=covid
 ARG APP_USER_ID=5001

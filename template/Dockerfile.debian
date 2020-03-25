@@ -16,18 +16,18 @@ RUN set -ex; \
         make \
         postgresql-client \
     ; \
+    apt-get clean ; \
+    rm -rf /var/lib/apt/lists/*; \
+    curl https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz | tar xzf - -C /usr/local --strip-components=1; \
+    node --version; \
+    npm --version; \
     curl -sS 'https://dl.yarnpkg.com/debian/pubkey.gpg' | apt-key add -; \
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list; \
     apt-get update -q; \
     apt-get install -y --no-install-recommends \
         yarn \
     ; \
-    yarn --version; \
-    apt-get clean ; \
-    rm -rf /var/lib/apt/lists/*; \
-    curl https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz | tar xzf - -C /usr/local --strip-components=1; \
-    node --version; \
-    npm --version
+    yarn --version
 
 ARG APP_USER=covid
 ARG APP_USER_ID=5001
