@@ -7,6 +7,10 @@ volumes:
   covid_db:
   covid_rd:
 
+networks:
+  covid_external_network:
+  covid_internal_network:
+
 services:
   # https://docs.docker.com/docker-hub/builds/automated-testing/
   sut:
@@ -45,7 +49,7 @@ services:
       - covid_var:/covid/var
       - covid_log:/covid/log
       - covid_tmp:/covid/tmp
-      # If you want locally mounted volumes
+      # If you want locally mounted volumes (make sure of the permissions)
       #- ${COVID_HOME}/var:/covid/var
       #- ${COVID_HOME}/log:/covid/log
       #- ${COVID_HOME}/tmp:/covid/tmp
@@ -53,6 +57,9 @@ services:
       - /etc/timezone:/etc/timezone:ro
     environment:
       - RAILS_ENV=production
+      - RAILS_LOG_TO_STDOUT=true
+      - RAILS_SERVE_STATIC_FILES=true
+      - ACTION_MAILER_DEFAULT_URL_HOST=localhost
       - DATABASE_URL=postgres://${COVID_DB_USER}:${COVID_DB_PASSWD}@covid-db:5432/${COVID_DB_NAME}?timeout=5000&reconnect=true
       - SECRET_KEY_BASE=${COVID_SECRET}
       # Twilio's API to send SMS
@@ -87,6 +94,10 @@ services:
     image: redis:5.0
     container_name: covid-redis
     restart: always
+    networks:
+      - covid_internal_network
+    #ports:
+    #  - 6379:6379
     #healthcheck:
     #  test: ["CMD", "redis-cli", "ping"]
     volumes:

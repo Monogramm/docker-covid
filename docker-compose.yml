@@ -6,24 +6,31 @@ volumes:
   covid_tmp:
   covid_db:
   covid_rd:
+  covid_web:
+
+networks:
+  covid_external_network:
+  covid_internal_network:
 
 services:
-  covid:
+  covid-app:
     # For production, download prebuilt image
     image: ${COVID_IMAGE}
-    container_name: covid
+    container_name: covid-app
     #restart: always
     depends_on:
       - covid-db
     links:
       - covid-db
+    networks:
+      - covid_internal_network
     expose:
       - 3000
     volumes:
       - covid_var:/covid/var
       - covid_log:/covid/log
       - covid_tmp:/covid/tmp
-      # If you want locally mounted volumes
+      # If you want locally mounted volumes (make sure of the permissions)
       #- ${COVID_HOME}/var:/covid/var
       #- ${COVID_HOME}/log:/covid/log
       #- ${COVID_HOME}/tmp:/covid/tmp
@@ -31,6 +38,8 @@ services:
       - /etc/timezone:/etc/timezone:ro
     environment:
       - RAILS_ENV=production
+      - RAILS_LOG_TO_STDOUT=true
+      - ACTION_MAILER_DEFAULT_URL_HOST=${COVID_DOMAIN}
       - DATABASE_URL=postgres://${COVID_DB_USER}:${COVID_DB_PASSWD}@covid-db:5432/${COVID_DB_NAME}?timeout=5000&reconnect=true
       - SECRET_KEY_BASE=${COVID_SECRET}
       # Twilio's API to send SMS
@@ -48,6 +57,8 @@ services:
     image: postgres:10.4-alpine
     container_name: covid-db
     restart: always
+    networks:
+      - covid_internal_network
     #ports:
     #  - 5432:5432
     volumes:
@@ -65,6 +76,10 @@ services:
     image: redis:5.0
     container_name: covid-redis
     restart: always
+    networks:
+      - covid_internal_network
+    #ports:
+    #  - 6379:6379
     #healthcheck:
     #  test: ["CMD", "redis-cli", "ping"]
     volumes:
@@ -76,3 +91,26 @@ services:
     environment:
       #- REDIS_PASSWORD=${COVID_REDIS_PASSWD}
       - ALLOW_EMPTY_PASSWORD=yes
+
+  covid-web:
+    image: nginx:alpine
+    container_name: covid-web
+    restart: always
+    networks:
+      - covid_external_network
+      - covid_internal_network
+    ports:
+      - 8080:80
+    depends_on:
+      - covid-app
+    links:
+      - covid-app
+    volumes_from: 
+      - covid-app
+    volumes:
+      - covid_web:/var/logs/nginx
+      # If you want locally mounted volumes
+      #- ${COVID_HOME}/nginx/logs:/var/logs/nginx
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro

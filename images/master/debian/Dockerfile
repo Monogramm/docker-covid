@@ -45,7 +45,7 @@ RUN set -ex; \
     mkdir -p "/home/${APP_USER}"; \
     chown -R "${APP_USER}:${APP_GROUP}" "/home/${APP_USER}"
 
-VOLUME [ "log", "tmp", "var" ]
+VOLUME [ "log", "public", "storage", "tmp", "var" ]
 
 ARG COVID_VERSION=master
 
