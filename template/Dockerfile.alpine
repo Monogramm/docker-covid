@@ -16,6 +16,7 @@ RUN set -ex; \
         libxslt-dev \
         make \
         postgresql-client \
+        postgresql-dev \
         yarn \
     ; \
     curl https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz | tar -xzf - -C /usr/local --strip-components=1; \
