@@ -1,5 +1,12 @@
 version: "2"
 
+volumes:
+  covid_var:
+  covid_log:
+  covid_tmp:
+  covid_db:
+  covid_rd:
+
 services:
   # https://docs.docker.com/docker-hub/builds/automated-testing/
   sut:
@@ -33,8 +40,12 @@ services:
     links:
       - covid-db
     volumes:
-      - ${COVID_HOME}/var:/covid/var
-      - ${COVID_HOME}/log:/covid/log
+      - covid_var:/covid/var
+      - covid_log:/covid/log
+      - covid_tmp:/covid/tmp
+      # If you want locally mounted volumes
+      #- ${COVID_HOME}/var:/covid/var
+      #- ${COVID_HOME}/log:/covid/log
       #- ${COVID_HOME}/tmp:/covid/tmp
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
@@ -60,7 +71,9 @@ services:
     #ports:
     #  - 5432:5432
     volumes:
-      - ${COVID_HOME}/db:/var/lib/postgresql/data
+      - covid_db:/var/lib/postgresql/data
+      # If you want locally mounted volumes
+      #- ${COVID_HOME}/db:/var/lib/postgresql/data
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     environment:
@@ -75,7 +88,9 @@ services:
     #healthcheck:
     #  test: ["CMD", "redis-cli", "ping"]
     volumes:
-      - ${COVID_HOME}/redis/:/data
+      - covid_rd/:/data
+      # If you want locally mounted volumes
+      #- ${COVID_HOME}/redis/:/data
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     environment:
