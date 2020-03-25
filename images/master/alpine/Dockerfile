@@ -55,6 +55,8 @@ USER ${APP_USER}:${APP_GROUP}
 
 WORKDIR ${APP_PATH}
 
+VOLUME [ "log", "tmp", "var" ]
+
 RUN set -ex; \
     gem install bundler
 
@@ -73,8 +75,7 @@ RUN set -ex; \
     ; \
     rm -rf vendor/bundle/ruby/*/cache; \
     rm -rf vendor/bundle/ruby/*/gems/*/spec; \
-    rm -rf vendor/bundle/ruby/*/gems/*/test; \
-    mkdir -p var
+    rm -rf vendor/bundle/ruby/*/gems/*/test
 
 COPY entrypoint.sh /
 

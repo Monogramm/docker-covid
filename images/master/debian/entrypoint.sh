@@ -22,7 +22,7 @@ init_file() {
     CONTENT=${2:-$(date -u +%Y-%m-%dT%H:%M:%SZ)}
 
     echo "$CONTENT" \
-        > "'var/.docker-init-${FILE}"
+        > "var/.docker-init-${FILE}"
 }
 
 # wait for service to be reachable
