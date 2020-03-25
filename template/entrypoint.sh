@@ -104,20 +104,24 @@ fi
 if [ -n "${DATABASE_URL}" ]; then
     log "Checking application's database status..."
     bundle exec rails db:version
-    bundle exec rails db:migrate:status
 
-    if [ ! -f 'var/.docker-init-db-setup' ]; then
+    if bundle exec rails db:version | grep 'Current version: 0'; then
         log "Executing application's database setup..."
         bundle exec rails db:setup
-        #init_file db-setup
+        bundle exec rails db:version
         log "Application's database migrations applied."
+    else
+        log "Checking application's migrations status..."
+        bundle exec rails db:migrate:status
+
+        # TODO Execute migrations if needed
     fi
 
     # Generate default admin account if never done before
     if [ ! -f 'var/.docker-init-admin' ] && [ -n "${COVID_ADMIN_PASSWD}" ]; then
         log "Generating default admin account..."
 
-        # TODO
+        # TODO Create a default admin account
         #init_file admin
 
         log "Default admin account generated..."
