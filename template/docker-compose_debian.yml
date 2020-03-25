@@ -39,6 +39,7 @@ services:
     environment:
       - RAILS_ENV=production
       - DATABASE_URL=postgres://${COVID_DB_USER}:${COVID_DB_PASSWD}@covid-db:5432/${COVID_DB_NAME}?timeout=5000&reconnect=true
+      - SECRET_KEY_BASE=${COVID_SECRET}
       # Twilio's API to send SMS
       - TWILIO_ACCOUNT_ID=${COVID_TWILIO_ACCOUNT_ID}
       - TWILIO_AUTH_TOKEN=${COVID_TWILIO_AUTH_TOKEN}
