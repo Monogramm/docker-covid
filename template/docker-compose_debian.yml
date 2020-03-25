@@ -74,7 +74,7 @@ services:
       #- REDIS_PASSWORD=${COVID_REDIS_PASSWD}
 
   covid-db:
-    image: postgres:10.4-alpine
+    image: postgres:10.4
     container_name: covid-db
     restart: always
     #ports:

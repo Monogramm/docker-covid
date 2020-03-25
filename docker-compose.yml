@@ -15,7 +15,7 @@ networks:
 services:
   covid-app:
     # For production, download prebuilt image
-    image: ${COVID_IMAGE}
+    image: monogramm/docker-covid:${COVID_IMAGE}
     container_name: covid-app
     #restart: always
     depends_on:
@@ -73,7 +73,7 @@ services:
       - POSTGRES_PASSWORD=${COVID_DB_PASSWD}
 
   covid-redis:
-    image: redis:5.0
+    image: redis:5.0-alpine
     container_name: covid-redis
     restart: always
     networks:
