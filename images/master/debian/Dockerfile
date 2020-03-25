@@ -86,7 +86,7 @@ RUN set -ex; \
 COPY entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["bundle", "exec", "rails", "server"]
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
 
 EXPOSE 3000
 
