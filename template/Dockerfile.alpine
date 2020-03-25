@@ -75,7 +75,7 @@ RUN set -ex; \
     rm -rf vendor/bundle/ruby/*/gems/*/spec; \
     rm -rf vendor/bundle/ruby/*/gems/*/test
 
-COPY entrypoint.sh /
+COPY --chown=${APP_USER}:${APP_GROUP} entrypoint.sh /
 RUN set -ex; \
     chmod 755 /entrypoint.sh;
 
