@@ -39,6 +39,8 @@ services:
       - covid-db
     links:
       - covid-db
+    expose:
+      - 3000
     volumes:
       - covid_var:/covid/var
       - covid_log:/covid/log

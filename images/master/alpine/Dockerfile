@@ -85,7 +85,9 @@ RUN set -ex; \
 COPY entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["bundle", "exec", "passenger", "start"]
+CMD ["bundle", "exec", "rails", "server"]
+
+EXPOSE 3000
 
 # Arguments to label built container
 ARG VCS_REF
