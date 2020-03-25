@@ -12,6 +12,8 @@ RUN set -ex; \
         curl \
         gcc \
         git \
+        libxml2-dev \
+        libxslt-dev \
         make \
         postgresql-client \
         yarn \
