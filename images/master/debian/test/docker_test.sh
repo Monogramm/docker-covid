@@ -25,7 +25,7 @@ fi
 # Add your own tests
 # https://docs.docker.com/docker-hub/builds/automated-testing/
 echo "Executing Covid app tests..."
-wget https://covid:3000
+wget https://covid:3000 --no-check-certificate
 cat index.html
 
 # Success
