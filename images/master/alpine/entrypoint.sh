@@ -148,7 +148,7 @@ if [ ! -d  'var/ssl' ]; then
         -passin file:var/ssl/.ssl_passout \
         -key var/ssl/server.key \
         -out var/ssl/server.csr \
-        -subj "C=Unknown/ST=Unknown/L=Unknown/O=Unknown/OU=Unknown/CN=localhost.ssl" \
+        -subj "/C=Unknown/ST=Unknown/L=Unknown/O=Unknown/OU=Unknown/CN=localhost.ssl" \
     ;
 
     # Generate self signed ssl certificate 
