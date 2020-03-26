@@ -90,7 +90,7 @@ RUN set -ex; \
 COPY entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["bundle", "exec", "rails", "server", "puma", "-b", "ssl://0.0.0.0:3000?key=var/ssl/server.key&cert=var/ssl/server.crt"]
+CMD ["bundle", "exec", "rails", "server", "-u", "puma", "-b", "ssl://0.0.0.0:3000?key=var/ssl/server.key&cert=var/ssl/server.crt"]
 
 EXPOSE 3000
 
