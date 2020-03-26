@@ -109,9 +109,60 @@ if [ -n "${DATABASE_URL}" ]; then
 
         # TODO Create a default admin account
 
-        log "Default admin account generated..."
+        log "Default admin account generated."
     fi
 fi
+
+if [ ! -d  'var/ssl' ]; then
+    log "No SSL certificates found. Self signed certificates will be generated (not recommended for production)."
+
+    log "Generating default self signed certificates..."
+
+    mkdir -p 'var/ssl';
+
+    # Generate a random password
+    </dev/urandom tr -dc 'A-Za-z0-9+\-*_' | head -c 64 > 'var/ssl/.ssl_passout';
+
+    # See reference at https://gist.github.com/tadast/9932075
+    # Create your private key (any password will do, we remove it below)
+    openssl genrsa \
+        -aes128 \
+        -out var/ssl/server.orig.key \
+        -passout file:var/ssl/.ssl_passout \
+        2048 \
+    ;
+
+    # Remove the password
+    openssl rsa \
+        -passin file:var/ssl/.ssl_passout \
+        -in var/ssl/server.orig.key \
+        -out var/ssl/server.key \
+    ;
+
+    # Generate the csr (Certificate signing request)
+    # Uses localhost.ssl as the common name to keep browsers happy 
+    # (has to do with non internal domain names ... which sadly can be
+    # avoided with a domain name with a "." in the middle of it somewhere)
+    openssl req \
+        new \
+        -passin file:var/ssl/.ssl_passout \
+        -key var/ssl/server.key \
+        -out var/ssl/server.csr \
+        -subj "C=Unknown/ST=Unknown/L=Unknown/O=Unknown/OU=Unknown/CN=localhost.ssl" \
+    ;
+
+    # Generate self signed ssl certificate 
+    openssl x509 \
+        -req \
+        -days 365 \
+        -in var/ssl/server.csr \
+        -signkey var/ssl/server.key \
+        -out var/ssl/server.crt \
+    ;
+
+    log "Default default self signed certificates generated."
+fi
+
 
 log "Executing App command..."
 exec "$@"
