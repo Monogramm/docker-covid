@@ -144,7 +144,7 @@ if [ ! -d  'var/ssl' ]; then
     # (has to do with non internal domain names ... which sadly can be
     # avoided with a domain name with a "." in the middle of it somewhere)
     openssl req \
-        new \
+        -new \
         -passin file:var/ssl/.ssl_passout \
         -key var/ssl/server.key \
         -out var/ssl/server.csr \
