@@ -9,6 +9,7 @@ ENV HEROKU true
 RUN set -ex; \
     apk add --no-cache  \
         build-base \
+        ca-certificates \
         curl \
         gcc \
         git \
@@ -18,6 +19,7 @@ RUN set -ex; \
         openssl \
         postgresql-client \
         postgresql-dev \
+        tzdata \
         yarn \
     ; \
     curl https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz | tar -xzf - -C /usr/local --strip-components=1; \
