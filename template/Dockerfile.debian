@@ -29,7 +29,7 @@ RUN set -ex; \
     yarn --version; \
     apt-get clean ; \
     rm -rf /var/lib/apt/lists/*; \
-    echo "127.0.0.1 localhost.ssl" | sudo tee -a /private/etc/hosts
+    echo "127.0.0.1 localhost.ssl" | tee -a /private/etc/hosts
 
 ARG APP_USER=covid
 ARG APP_USER_ID=5001
