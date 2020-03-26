@@ -114,7 +114,7 @@ if [ -n "${DATABASE_URL}" ]; then
 fi
 
 if [ ! -d  'var/ssl' ]; then
-    log "No SSL certificates found. Self signed certificates will be generated (not recommended for production)."
+    log "No SSL certificates found. You should mount your own certificates at $(pwd)/var/ssl/server.key and $(pwd)/var/ssl/server.crt."
 
     log "Generating default self signed certificates..."
 
