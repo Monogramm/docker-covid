@@ -11,7 +11,18 @@
 
 Docker image for **Covid**.
 
-:construction: **This image is still in development!**
+This image aims to provide the following features:
+-   production ready image based on official [ruby](https://hub.docker.com/_/ruby/) docker image
+-   using [puma](https://puma.io/) to serve the application
+-   available as either debian or alpine variants
+-   available sample Nginx setup as reverse proxy
+-   running as non-root user (user/group name and id based on build arguments)
+-   automatic database setup and migrations
+-   automatic admin user creation (email and password based on environment variables)
+-   automatic generation of a self signed certifcate for local usage
+    *   Note that it's still recommended to mount valid certificates for production
+
+:construction: **This image is still in beta!**
 
 ## What is **Covid** ?
 
@@ -29,20 +40,11 @@ Web application which aims to facilitate covid-19 patients' self-monitoring at h
 ## How to run this image ?
 
 1. Clone this project using `git clone https://github.com/Monogramm/docker-covid.git`
-1. Replace any sensitive information in the `.env` file by your own
+1. Replace any default information in the `.env` file by your own (password, Twilio)
 1. Run the application by using `docker-compose up -d`
 1. Open your browser at _https://localhost:3000/admin/_
 
-<!--
-    If based on official images, refer to official doc:
-
-See **Covid** base image documentation for details.
-
-> [**Covid** GitHub](https://github.com/lifen-labs/covid)
-
-> [**Covid** DockerHub](https://hub.docker.com/r/lifen-labs/docker-covid/)
-
--->
+For production, it is recommended to generate your own certificates (see `docker-compose.yml`).
 
 # Questions / Issues
 

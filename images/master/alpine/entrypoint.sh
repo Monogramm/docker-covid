@@ -103,7 +103,6 @@ fi
 
 if [ -n "${DATABASE_URL}" ]; then
     log "Checking application's database status..."
-    bundle exec rails db:version
 
     if bundle exec rails db:version | grep 'Current version: 0'; then
         log "Executing application's database setup..."
@@ -114,15 +113,24 @@ if [ -n "${DATABASE_URL}" ]; then
         log "Checking application's migrations status..."
         bundle exec rails db:migrate:status
 
-        # TODO Execute migrations if needed
+        # Execute migrations if needed
+        if bundle exec rails db:migrate:status | grep '^down '; then
+            log "Executing application's database migrations..."
+            bundle exec rails db:migrate
+            log "Application's database migrations applied."
+            bundle exec rails db:migrate:status
+        fi
+
     fi
 
-    # Generate default admin account if never done before
-    if [ ! -f 'var/.docker-init-admin' ] && [ -n "${COVID_ADMIN_PASSWD}" ]; then
-        log "Generating default admin account..."
+    # Generate default admin account if never done before and vars defined
+    if [ ! -f 'var/.docker-init-admin' ] && [ -n "${COVID_ADMIN_EMAIL}" ] && [ -n "${COVID_ADMIN_PASSWORD}" ]; then
+        log "Generating default admin account '${COVID_ADMIN_EMAIL}'..."
 
-        # TODO Create a default admin account
-        #init_file 'var/.docker-init-admin'
+        # Send command to rails console
+        echo "AdminUser.create!(email: '${COVID_ADMIN_EMAIL}', password: '${COVID_ADMIN_PASSWORD}', password_confirmation: '${COVID_ADMIN_PASSWORD}')" \
+            | bundle exec rails c
+        init_file 'var/.docker-init-admin'
 
         log "Default admin account generated."
     fi

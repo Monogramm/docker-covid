@@ -34,6 +34,9 @@ services:
       #- ${COVID_HOME}/var:/covid/var
       #- ${COVID_HOME}/log:/covid/log
       #- ${COVID_HOME}/tmp:/covid/tmp
+      # Mount valid certificates matching ${COVID_DOMAIN}
+      #- ./path/to/certs/server.key:/covid/var/ssl/server.key
+      #- ./path/to/certs/server.crt:/covid/var/ssl/server.crt
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     environment:
@@ -52,6 +55,9 @@ services:
       - REDIS_HOST=covid-redis
       - REDIS_PORT_NUMBER=6379
       #- REDIS_PASSWORD=${COVID_REDIS_PASSWD}
+      # Admin user config
+      - COVID_ADMIN_EMAIL=${COVID_ADMIN_EMAIL}
+      - COVID_ADMIN_PASSWORD=${COVID_ADMIN_PASSWORD}
 
   covid-db:
     image: postgres:10.4-alpine
