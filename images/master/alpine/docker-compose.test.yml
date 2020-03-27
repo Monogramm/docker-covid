@@ -77,7 +77,7 @@ services:
       - REDIS_HOST=covid-redis
       - REDIS_PORT_NUMBER=6379
       #- REDIS_PASSWORD=${COVID_REDIS_PASSWD}
-      # Admin config
+      # Admin user config
       - COVID_ADMIN_EMAIL=${COVID_ADMIN_EMAIL}
       - COVID_ADMIN_PASSWORD=${COVID_ADMIN_PASSWORD}
 
