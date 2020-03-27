@@ -15,8 +15,9 @@ This image aims to provide the following features:
 -   production ready image based on official [ruby](https://hub.docker.com/_/ruby/) docker image
 -   using [puma](https://puma.io/) to serve the application
 -   available as either debian or alpine variants
--   available sample Nginx setup as reverse proxy
 -   running as non-root user (user/group name and id based on build arguments)
+-   sample Nginx setup
+-   automatic wait for database to be ready
 -   automatic database setup and migrations
 -   automatic admin user creation (email and password based on environment variables)
 -   automatic generation of a self signed certifcate for local usage

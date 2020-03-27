@@ -43,8 +43,12 @@ services:
       - RAILS_ENV=production
       - RAILS_LOG_TO_STDOUT=true
       - ACTION_MAILER_DEFAULT_URL_HOST=${COVID_DOMAIN}
-      - DATABASE_URL=postgres://${COVID_DB_USER}:${COVID_DB_PASSWD}@covid-db:5432/${COVID_DB_NAME}?timeout=5000&reconnect=true
       - SECRET_KEY_BASE=${COVID_SECRET}
+      # Database Config
+      - COVID_DB_TYPE=postgres
+      - COVID_DB_HOST=covid-db
+      - COVID_DB_PORT=5432
+      - DATABASE_URL=postgres://${COVID_DB_USER}:${COVID_DB_PASSWD}@covid-db:5432/${COVID_DB_NAME}?timeout=5000&reconnect=true
       # Twilio's API to send SMS
       - TWILIO_ACCOUNT_ID=${COVID_TWILIO_ACCOUNT_ID}
       - TWILIO_AUTH_TOKEN=${COVID_TWILIO_AUTH_TOKEN}
