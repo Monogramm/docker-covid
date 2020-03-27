@@ -29,7 +29,7 @@ script:
   - docker-compose -f docker-compose.test.yml ps "covid-db" | grep "Up"
   - docker-compose -f docker-compose.test.yml logs "covid"
   - docker-compose -f docker-compose.test.yml ps "covid" | grep "Up"
-  - echo 'Wait until containers init and tests are over' && sleep 60
+  - echo 'Wait until containers init and tests are over' && sleep 120
   - docker-compose -f docker-compose.test.yml logs "sut"
   - docker-compose -f docker-compose.test.yml ps "sut" | grep "Exit 0"
   # Test containers can be dropped and restarted
@@ -40,7 +40,7 @@ script:
   - docker-compose -f docker-compose.test.yml ps "covid-db" | grep "Up"
   - docker-compose -f docker-compose.test.yml logs "covid"
   - docker-compose -f docker-compose.test.yml ps "covid" | grep "Up"
-  - echo 'Wait until containers init and tests are over' && sleep 60
+  - echo 'Wait until containers init and tests are over' && sleep 120
   - docker-compose -f docker-compose.test.yml logs "sut"
   - docker-compose -f docker-compose.test.yml ps "sut" | grep "Exit 0"
 
