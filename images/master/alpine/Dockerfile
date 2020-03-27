@@ -84,8 +84,8 @@ RUN set -ex; \
         --no-progress \
         --non-interactive \
     ; \
-    rake assets:precompile \
-    rake assets:clean \
+    rake assets:precompile; \
+    rake assets:clean; \
     rm -rf vendor/bundle/ruby/*/cache; \
     rm -rf vendor/bundle/ruby/*/gems/*/spec; \
     rm -rf vendor/bundle/ruby/*/gems/*/test
