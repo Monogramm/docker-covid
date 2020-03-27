@@ -11,6 +11,20 @@ log() {
     echo "[$0] [$(date +%Y-%m-%dT%H:%M:%S)] ${MESSAGE}"
 }
 
+# init flag file
+init_file() {
+    FILE=${1}
+    if [ -z "${FILE}" ]; then
+        log "Missing name docker init file!"
+        exit 1
+    fi
+
+    CONTENT=${2:-$(date -u +%Y-%m-%dT%H:%M:%SZ)}
+
+    echo "$CONTENT" \
+        > "${FILE}"
+}
+
 # wait for service to be reachable
 wait_for_service() {
     WAIT_FOR_ADDR=${1}
@@ -108,6 +122,7 @@ if [ -n "${DATABASE_URL}" ]; then
         log "Generating default admin account..."
 
         # TODO Create a default admin account
+        #init_file 'var/.docker-init-admin'
 
         log "Default admin account generated."
     fi
@@ -160,7 +175,17 @@ if [ ! -d  'var/ssl' ]; then
         -out var/ssl/server.crt \
     ;
 
-    log "Default default self signed certificates generated."
+    log "Default self signed certificates generated."
+fi
+
+if [ ! -d 'var/.docker-init-assets' ]; then
+    log "Precompiling assets..."
+    
+    bundle exec rake assets:precompile;
+    bundle exec rake assets:clean;
+    init_file 'var/.docker-init-assets'
+
+    log "Assets precompiled."
 fi
 
 
