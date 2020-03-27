@@ -101,6 +101,9 @@ if [ -z "${DATABASE_URL}" ]; then
     log "App database URL initialized"
 fi
 
+# Wait for database to be ready
+wait_for_services "${COVID_DB_HOST}:${COVID_DB_PORT}"
+
 if [ -n "${DATABASE_URL}" ]; then
     log "Checking application's database status..."
 
