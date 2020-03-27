@@ -1,4 +1,4 @@
-FROM ruby:2.6-stretch
+FROM ruby:2.6-alpine
 
 ENV NODE_VERSION "12.16.1"
 ENV NODE_ENV=production
@@ -7,28 +7,29 @@ ENV HEROKU true
 
 # Add requirements and install dependencies
 RUN set -ex; \
-    apt-get update -qq; \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-        apt-transport-https \
-        netcat \
+    apk add --no-cache  \
+        build-base \
+        ca-certificates \
+        curl \
         gcc \
         git \
+        libxml2-dev \
+        libxslt-dev \
         make \
         openssl \
         postgresql-client \
+        postgresql-dev \
+        tzdata \
+        yarn \
     ; \
-    curl https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz | tar xzf - -C /usr/local --strip-components=1; \
+    curl https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz | tar -xzf - -C /usr/local --strip-components=1; \
     node --version; \
     npm --version; \
-    curl -sS 'https://dl.yarnpkg.com/debian/pubkey.gpg' | apt-key add -; \
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list; \
-    apt-get update -q; \
-    apt-get install -y --no-install-recommends \
+    apk add --no-cache  \
         yarn \
     ; \
     yarn --version; \
-    apt-get clean ; \
-    rm -rf /var/lib/apt/lists/*; \
+    rm -rf /var/cache/apk/*; \
     mkdir -p /private/etc/; \
     touch /private/etc/hosts; \
     echo "127.0.0.1 localhost.ssl" | tee -a /private/etc/hosts
@@ -44,12 +45,12 @@ ARG APP_PATH=/covid
 # Running as non-root enables running this image in platforms like OpenShift
 # that do not allow images running as root.
 RUN set -ex; \
-    groupadd -f --gid "${APP_GROUP_ID}" "${APP_GROUP}"; \
-    useradd --uid "${APP_USER_ID}" --gid "${APP_GROUP_ID}" "${APP_USER}"; \
+    addgroup -S --gid "${APP_GROUP_ID}" "${APP_GROUP}"; \
+    adduser -D -g '' -u "${APP_USER_ID}" -G "${APP_GROUP}" "${APP_USER}"; \
     mkdir -p "/home/${APP_USER}"; \
     chown -R "${APP_USER}:${APP_GROUP}" "/home/${APP_USER}"
 
-ARG COVID_VERSION=%%VERSION%%
+ARG COVID_VERSION=master
 
 ADD --chown=covid:covid https://github.com/lifen-labs/covid/archive/${COVID_VERSION}.tar.gz ./
 

@@ -6,50 +6,26 @@ volumes:
   covid_tmp:
   covid_db:
   covid_rd:
+  covid_web:
 
 networks:
   covid_external_network:
   covid_internal_network:
 
 services:
-  # https://docs.docker.com/docker-hub/builds/automated-testing/
-  sut:
-    build:
-      context: ./test
-      dockerfile: Dockerfile
-    depends_on:
-      - covid-db
-      - covid
-    networks:
-      - covid_internal_network
-    volumes_from:
-      - covid
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-
-  covid:
-    # For development or CI, tag build from local Dockerfile
-    build:
-      context: ./
-      dockerfile: Dockerfile
-      args: 
-        - TAG=${TAG}
-        - VCS_REF=${VCS_REF}
-        - BUILD_DATE=${BUILD_DATE}
+  covid-app:
     # For production, download prebuilt image
-    #image: ${IMAGE_NAME}
-    container_name: covid
+    image: monogramm/docker-covid:${COVID_IMAGE}
+    container_name: covid-app
     #restart: always
     depends_on:
       - covid-db
     links:
       - covid-db
     networks:
-      - covid_external_network
       - covid_internal_network
-    ports:
-      - '3000:3000'
+    expose:
+      - 3000
     volumes:
       - covid_var:/covid/var
       - covid_log:/covid/log
@@ -58,13 +34,15 @@ services:
       #- ${COVID_HOME}/var:/covid/var
       #- ${COVID_HOME}/log:/covid/log
       #- ${COVID_HOME}/tmp:/covid/tmp
+      # Mount valid certificates matching ${COVID_DOMAIN}
+      #- ./path/to/certs/server.key:/covid/var/ssl/server.key
+      #- ./path/to/certs/server.crt:/covid/var/ssl/server.crt
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     environment:
       - RAILS_ENV=production
       - RAILS_LOG_TO_STDOUT=true
-      - RAILS_SERVE_STATIC_FILES=true
-      - ACTION_MAILER_DEFAULT_URL_HOST=localhost
+      - ACTION_MAILER_DEFAULT_URL_HOST=${COVID_DOMAIN}
       - SECRET_KEY_BASE=${COVID_SECRET}
       # Database Config
       - COVID_DB_TYPE=postgres
@@ -123,3 +101,26 @@ services:
     environment:
       #- REDIS_PASSWORD=${COVID_REDIS_PASSWD}
       - ALLOW_EMPTY_PASSWORD=yes
+
+  covid-web:
+    image: nginx:alpine
+    container_name: covid-web
+    restart: always
+    networks:
+      - covid_external_network
+      - covid_internal_network
+    ports:
+      - 8080:80
+    depends_on:
+      - covid-app
+    links:
+      - covid-app
+    volumes_from: 
+      - covid-app
+    volumes:
+      - covid_web:/var/logs/nginx
+      # If you want locally mounted volumes
+      #- ${COVID_HOME}/nginx/logs:/var/logs/nginx
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
