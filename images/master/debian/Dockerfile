@@ -73,17 +73,18 @@ RUN set -ex; \
 
 RUN set -ex; \
     bundle install \
-        --deployment \
+        --without="development:test" \
         --path vendor/bundle \
-        --no-cache \
-        --with="docker opf_plugins" \
-        --without="test development" \
-        --jobs=8 --retry=3 \
+        --binstubs vendor/bundle/bin \
+        --jobs=4 \
+        --deployment \
     ; \
     yarn install \
         --no-progress \
         --non-interactive \
     ; \
+    rake assets:precompile \
+    rake assets:clean \
     rm -rf vendor/bundle/ruby/*/cache; \
     rm -rf vendor/bundle/ruby/*/gems/*/spec; \
     rm -rf vendor/bundle/ruby/*/gems/*/test
