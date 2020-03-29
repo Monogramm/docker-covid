@@ -59,13 +59,16 @@ services:
       #- ${COVID_HOME}/var:/covid/var
       #- ${COVID_HOME}/log:/covid/log
       #- ${COVID_HOME}/tmp:/covid/tmp
+      # Mount valid certificates matching ${COVID_DOMAIN}
+      #- ./path/to/certs/server.key:/covid/var/ssl/server.key
+      #- ./path/to/certs/server.crt:/covid/var/ssl/server.crt
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     environment:
       - RAILS_ENV=production
       - RAILS_LOG_TO_STDOUT=true
       - RAILS_SERVE_STATIC_FILES=true
-      - ACTION_MAILER_DEFAULT_URL_HOST=localhost
+      - ACTION_MAILER_DEFAULT_URL_HOST=${COVID_DOMAIN}
       - SECRET_KEY_BASE=${COVID_SECRET}
       # Database Config
       - COVID_DB_TYPE=postgres
