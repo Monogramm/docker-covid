@@ -125,9 +125,9 @@ services:
       - covid-app
     volumes:
       # If you want docker volumes
-      #- covid_web:/var/logs/nginx
+      #- covid_web:/var/log/nginx
       # If you want locally mounted volumes
-      - ${COVID_HOME}/nginx/logs:/var/logs/nginx
+      - ${COVID_HOME}/nginx/logs:/var/log/nginx
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
