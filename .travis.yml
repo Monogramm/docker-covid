@@ -9,19 +9,27 @@ branches:
   only:
     - master
 
-before_script:
+before_install:
   - env | sort
-  - dir="images/${VERSION}/${VARIANT}"
+  - export home=$(pwd)
+  - export travis_dir="${home}/images/${VERSION}/${VARIANT}"
   - export TAG=travis
   - export VCS_REF=`git rev-parse --short HEAD`
   - export BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"`
-  - export IMAGE_NAME=docker-covid
+  - export IMAGE_NAME="docker-covid:${TAG}"
+
+install:
+  - echo "Changing to travis test directory ($travis_dir)"
+  - cd "$travis_dir"
+  # Test container build
+  - docker-compose -f docker-compose.test.yml build
+
+before_script:
+  - docker images
 
 script:
-  - cd "$dir"
-  # Test containers build
-  - docker-compose -f docker-compose.test.yml build
-  - docker images
+  - echo "Changing to travis test directory ($travis_dir)"
+  - cd "$travis_dir"
   # Test containers run
   - travis_retry docker-compose -f docker-compose.test.yml up -d && sleep 60
   - docker-compose -f docker-compose.test.yml ps
@@ -43,6 +51,14 @@ script:
   - echo 'Wait until containers init and tests are over' && sleep 120
   - docker-compose -f docker-compose.test.yml logs "sut"
   - docker-compose -f docker-compose.test.yml ps "sut" | grep "Exit 0"
+  # Test the NGinx reverse proxy config
+  - docker-compose -f docker-compose.test.yml down
+  - echo "Changing to home directory ($travis_dir)"
+  - cd "$travis_dir"
+  - sed -i -e "s| monogramm/docker-covid:.*| ${IMAGE_NAME}|g" test/Dockerfile
+  - travis_retry docker-compose up -d && sleep 60
+  - docker-compose ps
+  - docker-compose logs
 
 notifications:
   email: false

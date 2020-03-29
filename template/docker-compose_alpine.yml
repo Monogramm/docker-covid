@@ -51,6 +51,7 @@ services:
     ports:
       - '3000:3000'
     volumes:
+      # If you want docker volumes
       - covid_test_var:/covid/var
       - covid_test_log:/covid/log
       - covid_test_tmp:/covid/tmp
@@ -94,6 +95,7 @@ services:
     #ports:
     #  - 5432:5432
     volumes:
+      # If you want docker volumes
       - covid_test_db:/var/lib/postgresql/data
       # If you want locally mounted volumes
       #- ${COVID_HOME}/db:/var/lib/postgresql/data
@@ -115,6 +117,7 @@ services:
     #healthcheck:
     #  test: ["CMD", "redis-cli", "ping"]
     volumes:
+      # If you want docker volumes
       - covid_test_rd/:/data
       # If you want locally mounted volumes
       #- ${COVID_HOME}/redis/:/data

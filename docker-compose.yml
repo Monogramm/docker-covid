@@ -29,6 +29,7 @@ services:
     ports:
       - '3000:3000'
     volumes:
+      # If you want docker volumes
       - covid_var:/covid/var
       - covid_log:/covid/log
       - covid_tmp:/covid/tmp
@@ -44,7 +45,7 @@ services:
     environment:
       - RAILS_ENV=production
       - RAILS_LOG_TO_STDOUT=true
-      - RAILS_SERVE_STATIC_FILES=true
+      - RAILS_SERVE_STATIC_FILES=false
       - ACTION_MAILER_DEFAULT_URL_HOST=${COVID_DOMAIN}
       - SECRET_KEY_BASE=${COVID_SECRET}
       # Database Config
@@ -75,9 +76,10 @@ services:
     #ports:
     #  - 5432:5432
     volumes:
-      - covid_db:/var/lib/postgresql/data
+      # If you want docker volumes
+      #- covid_db:/var/lib/postgresql/data
       # If you want locally mounted volumes
-      #- ${COVID_HOME}/db:/var/lib/postgresql/data
+      - ${COVID_HOME}/db:/var/lib/postgresql/data
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     environment:
@@ -96,9 +98,10 @@ services:
     #healthcheck:
     #  test: ["CMD", "redis-cli", "ping"]
     volumes:
-      - covid_rd/:/data
+      # If you want docker volumes
+      #- covid_rd/:/data
       # If you want locally mounted volumes
-      #- ${COVID_HOME}/redis/:/data
+      - ${COVID_HOME}/redis/:/data
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     environment:
@@ -121,9 +124,10 @@ services:
     volumes_from: 
       - covid-app
     volumes:
-      - covid_web:/var/logs/nginx
+      # If you want docker volumes
+      #- covid_web:/var/logs/nginx
       # If you want locally mounted volumes
-      #- ${COVID_HOME}/nginx/logs:/var/logs/nginx
+      - ${COVID_HOME}/nginx/logs:/var/logs/nginx
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
