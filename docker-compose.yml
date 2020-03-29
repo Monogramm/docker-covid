@@ -24,8 +24,10 @@ services:
       - covid-db
     networks:
       - covid_internal_network
-    expose:
-      - 3000
+    #expose:
+    #  - 3000
+    ports:
+      - '3000:3000'
     volumes:
       - covid_var:/covid/var
       - covid_log:/covid/log
@@ -42,6 +44,7 @@ services:
     environment:
       - RAILS_ENV=production
       - RAILS_LOG_TO_STDOUT=true
+      - RAILS_SERVE_STATIC_FILES=true
       - ACTION_MAILER_DEFAULT_URL_HOST=${COVID_DOMAIN}
       - SECRET_KEY_BASE=${COVID_SECRET}
       # Database Config
@@ -58,7 +61,7 @@ services:
       # Redis Config
       - REDIS_HOST=covid-redis
       - REDIS_PORT_NUMBER=6379
-      #- REDIS_PASSWORD=${COVID_REDIS_PASSWD}
+      - REDIS_PASSWORD=${COVID_REDIS_PASSWD}
       # Admin user config
       - COVID_ADMIN_EMAIL=${COVID_ADMIN_EMAIL}
       - COVID_ADMIN_PASSWORD=${COVID_ADMIN_PASSWORD}
@@ -99,13 +102,13 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     environment:
-      #- REDIS_PASSWORD=${COVID_REDIS_PASSWD}
+      - REDIS_PASSWORD=${COVID_REDIS_PASSWD}
       - ALLOW_EMPTY_PASSWORD=yes
 
   covid-web:
     image: nginx:alpine
     container_name: covid-web
-    restart: always
+    #restart: always
     networks:
       - covid_external_network
       - covid_internal_network

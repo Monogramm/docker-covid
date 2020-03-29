@@ -1,11 +1,11 @@
 version: "2"
 
 volumes:
-  covid_var:
-  covid_log:
-  covid_tmp:
-  covid_db:
-  covid_rd:
+  covid_test_var:
+  covid_test_log:
+  covid_test_tmp:
+  covid_test_db:
+  covid_test_rd:
 
 networks:
   covid_external_network:
@@ -51,9 +51,9 @@ services:
     ports:
       - '3000:3000'
     volumes:
-      - covid_var:/covid/var
-      - covid_log:/covid/log
-      - covid_tmp:/covid/tmp
+      - covid_test_var:/covid/var
+      - covid_test_log:/covid/log
+      - covid_test_tmp:/covid/tmp
       # If you want locally mounted volumes (make sure of the permissions)
       #- ${COVID_HOME}/var:/covid/var
       #- ${COVID_HOME}/log:/covid/log
@@ -94,7 +94,7 @@ services:
     #ports:
     #  - 5432:5432
     volumes:
-      - covid_db:/var/lib/postgresql/data
+      - covid_test_db:/var/lib/postgresql/data
       # If you want locally mounted volumes
       #- ${COVID_HOME}/db:/var/lib/postgresql/data
       - /etc/localtime:/etc/localtime:ro
@@ -115,7 +115,7 @@ services:
     #healthcheck:
     #  test: ["CMD", "redis-cli", "ping"]
     volumes:
-      - covid_rd/:/data
+      - covid_test_rd/:/data
       # If you want locally mounted volumes
       #- ${COVID_HOME}/redis/:/data
       - /etc/localtime:/etc/localtime:ro
