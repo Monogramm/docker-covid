@@ -54,8 +54,8 @@ script:
   # Test the NGinx reverse proxy config
   - docker-compose -f docker-compose.test.yml down
   - echo "Changing to home directory ($travis_dir)"
-  - cd "$travis_dir"
-  - sed -i -e "s| monogramm/docker-covid:.*| ${IMAGE_NAME}|g" test/Dockerfile
+  - cd "$home"
+  - sed -i -e "s| monogramm/docker-covid:.*| ${IMAGE_NAME}|g" docker-compose.yml
   - travis_retry docker-compose up -d && sleep 60
   - docker-compose ps
   - docker-compose logs
