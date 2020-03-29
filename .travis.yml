@@ -22,11 +22,12 @@ install:
   - echo "Changing to travis test directory ($travis_dir)"
   - cd "$travis_dir"
   # Test container build
-  - docker build 
-    --build-arg TAG=${TAG}
-    --build-arg VCS_REF=${VCS_REF}
-    --build-arg BUILD_DATE=${BUILD_DATE}
-    -t $IMAGE_NAME .
+  #- docker build 
+  #  --build-arg TAG=${TAG}
+  #  --build-arg VCS_REF=${VCS_REF}
+  #  --build-arg BUILD_DATE=${BUILD_DATE}
+  #  -t $IMAGE_NAME .
+  - sed -i -e "s|#image: .*|#image: ${IMAGE_NAME}|g" docker-compose.test.yml
   - docker-compose -f docker-compose.test.yml build
 
 before_script:
